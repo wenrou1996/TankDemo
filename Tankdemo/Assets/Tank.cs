@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Tank : MonoBehaviour {
 
-	//履带
+    //马达音源
+    public AudioSource motorAudioSource;
+
+    //马达音效
+    public AudioClip motorClip;
+	
+    //履带
 	private Transform tracks;
 
 	//轮子
@@ -64,6 +70,21 @@ public class Tank : MonoBehaviour {
         //炮塔炮管角度
         turretRotTarget = Camera.main.transform.eulerAngles.y;
         turretRollTarget = Camera.main.transform.eulerAngles.x;
+    }
+
+    //马达音效
+    void MotorSound()
+    {
+        if (motor != 0 && !motorAudioSource.isPlaying)
+        {
+            motorAudioSource.loop = true;
+            motorAudioSource.clip = motorClip;
+            motorAudioSource.Play();
+        }
+        else if(motor == 0)
+        {
+            motorAudioSource.Pause();
+        }
     }
 
 	//履带滚动
@@ -173,6 +194,9 @@ public class Tank : MonoBehaviour {
 		wheels = transform.FindChild("wheels");
 		//获取履带
 		tracks = transform.Find("chain");
+        //马达音源
+        motorAudioSource = gameObject.AddComponent<AudioSource>();
+        motorAudioSource.spatialBlend = 1;
 	}
 	
 	// Update is called once per frame
@@ -208,6 +232,8 @@ public class Tank : MonoBehaviour {
 //				TrackMove ();
 //			}
         }
+        //马达音效
+        MotorSound();
         //炮塔旋转
         TurretRotation();
         //炮管旋转
