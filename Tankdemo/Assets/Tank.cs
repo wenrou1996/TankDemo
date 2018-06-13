@@ -191,7 +191,7 @@ public class Tank : MonoBehaviour {
         //获取炮管
         gun = turret.Find("gunMesh");
 		//获取轮子
-		wheels = transform.FindChild("wheels");
+		wheels = transform.Find("wheels");
 		//获取履带
 		tracks = transform.Find("chain");
         //马达音源
