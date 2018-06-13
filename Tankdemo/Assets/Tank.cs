@@ -15,11 +15,24 @@ public class Tank : MonoBehaviour {
     //默认操控类型为玩家
     public CtrlType ctrlType = CtrlType.player;
 
+    //中心准心
+    public Texture2D centerSight;
+
+    //坦克准心
+    public Texture2D tankSight;
+
+    //生命指示条素材
+    public Texture2D hpBarBg;
+    public Texture2D hpBar;
+
+    //焚烧特效
+    public GameObject destoryEffect;
+
     //最大生命值
     private float maxHp = 100;
 
     //当前生命值
-    private float hp = 100;
+    public float hp = 100;
 
     //炮弹预设
     public GameObject bullet;
@@ -100,13 +113,99 @@ public class Tank : MonoBehaviour {
 			continue;
 		}
         //炮塔炮管角度
-        turretRotTarget = Camera.main.transform.eulerAngles.y;
-        turretRollTarget = Camera.main.transform.eulerAngles.x;
+        //turretRotTarget = Camera.main.transform.eulerAngles.y;
+        //turretRollTarget = Camera.main.transform.eulerAngles.x;
+        TargetSignPos();
+        CalExplodePoint();
         //发射炮弹
         if(Input.GetMouseButton(0))
         {
             Shoot();
         }
+    }
+
+    //绘制生命条
+    public void DrawHp()
+    {
+        //底框
+        Rect bgRect = new Rect(30, Screen.height - hpBarBg.height - 15, hpBarBg.width, hpBarBg.height);
+        GUI.DrawTexture(bgRect, hpBarBg);
+        //指示条
+        float width = hp * 102 / maxHp;
+        Rect hpRect = new Rect(bgRect.x + 27, bgRect.y + 6, width, hpBar.height);
+        GUI.DrawTexture(hpRect, hpBar);
+        //文字
+        string text = Mathf.Ceil(hp).ToString() + "/" + Mathf.Ceil(maxHp).ToString();
+        Rect textRect = new Rect(bgRect.x + 80, bgRect.y - 10, 50, 50);
+        GUI.Label(textRect, text);
+    }
+
+    //绘制准心
+    public void DrawSight()
+    {
+        //计算实际射击位置
+        Vector3 explodePoint = CalExplodePoint();
+        //获取坦克准心的屏幕坐标
+        Vector3 screenPoint = Camera.main.WorldToScreenPoint(explodePoint);
+        //绘制坦克准心
+        Rect tankRect = new Rect(screenPoint.x - tankSight.width / 2, Screen.height - screenPoint.y - tankSight.height / 2, tankSight.width, tankSight.height);
+        GUI.DrawTexture(tankRect, tankSight);
+        //绘制中心准心
+        Rect centerRect = new Rect(Screen.width/2 - centerSight.width/2, Screen.height/2 - centerSight.height/2, centerSight.width, centerSight.height);
+        GUI.DrawTexture(centerRect, centerSight);
+    }
+
+    //计算角度
+    public void TargetSignPos()
+    {
+        //碰撞信息和碰撞点
+        Vector3 hitPoint = Vector3.zero;
+        RaycastHit raycastHit;
+        //屏幕中心位置
+        Vector3 centerVec = new Vector3(Screen.width/2, Screen.height/2, 0);
+        Ray ray = Camera.main.ScreenPointToRay(centerVec);
+        //射线检测，获取hitPiont
+        if(Physics.Raycast(ray, out raycastHit, 400.0f))
+        {
+            hitPoint = raycastHit.point;
+        }
+        else
+        {
+            hitPoint = ray.GetPoint(400);
+        }
+        //计算目标角度
+        Vector3 dir = hitPoint - turret.position;
+        Quaternion angle = Quaternion.LookRotation(dir);
+        turretRotTarget = angle.eulerAngles.y;
+        turretRollTarget = angle.eulerAngles.x;
+        //调试用，稍后删除
+        //Transform targetCube = GameObject.Find("TargetCube").transform;
+        //targetCube.position = hitPoint;
+    }
+
+    //计算爆炸位置
+    public Vector3 CalExplodePoint()
+    {
+        //碰撞信息和碰撞点
+        Vector3 hitPoint = Vector3.zero;
+        RaycastHit hit;
+        //沿着炮管方向的射线
+        Vector3 pos = gun.position + gun.forward * 5;
+        Ray ray = new Ray(pos, gun.forward);
+        //射线检测
+        if(Physics.Raycast(ray, out hit, 400.0f))
+        {
+            hitPoint = hit.point;
+        }
+        else
+        {
+            hitPoint = ray.GetPoint(400);
+        }
+        //调试用，稍后将删除
+        //Transform explodeCube = GameObject.Find("ExplodeCube").transform;
+        //explodeCube.position = hitPoint;
+        //调试用结束
+        return hitPoint;
     }
 
     //开炮
@@ -126,6 +225,30 @@ public class Tank : MonoBehaviour {
         Vector3 pos = gun.position + gun.forward * 50;
         Instantiate(bullet, pos, gun.rotation);
         lastShootTime = Time.time;
+        BeAttacked(30);
+    }
+
+    //被击中
+    public void BeAttacked(float att)
+    {
+        //坦克已经被摧毁
+        if(hp <= 0)
+        {
+            return;
+        }
+        //击中处理
+        if(hp > 0)
+        {
+            hp -= att;
+        }
+        //被摧毁
+        if(hp <= 0)
+        {
+            GameObject destoryObj = (GameObject)Instantiate(destoryEffect);
+            destoryObj.transform.SetParent(transform, false);
+            destoryObj.transform.localPosition = Vector3.zero;
+            ctrlType = CtrlType.none;
+        }
     }
 
     //马达音效
@@ -294,5 +417,14 @@ public class Tank : MonoBehaviour {
         TurretRotation();
         //炮管旋转
         TurretRoll();
+	}
+
+	//绘图
+	void OnGUI()
+	{
+        if (ctrlType != CtrlType.player)
+            return;
+        DrawSight();
+        DrawHp();
 	}
 }

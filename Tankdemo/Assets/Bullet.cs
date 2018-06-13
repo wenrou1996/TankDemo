@@ -12,13 +12,31 @@ public class Bullet : MonoBehaviour {
     public float instantiateTime = 0f;
 
 	//碰撞
-	private void OnCollisionEnter(Collision collision)
+	private void OnCollisionEnter(Collision collisionInfo)
 	{
         //爆炸效果
         Instantiate(explode, transform.position, transform.rotation);
         //摧毁自身
         Destroy(gameObject);
+        //击中坦克
+        Tank tank = collisionInfo.gameObject.GetComponent<Tank>();
+        if(tank != null)
+        {
+            float att = GetAtt();
+            tank.BeAttacked(att);
+        }
 	}
+
+    //计算攻击力
+    private float GetAtt()
+    {
+        float att = 100 - (Time.time - instantiateTime) * 40;
+        if (att < 1)
+        {
+            att = 1;
+        }
+        return att;
+    }
 
 	// Use this for initialization
 	void Start () {

@@ -243,7 +243,7 @@ EllipsoidParticleEmitter:
   worldVelocity: {x: 0, y: 0, z: 0}
   localVelocity: {x: 0, y: 0, z: 0}
   rndVelocity: {x: 0, y: 0, z: 0}
-  emitterVelocityScale: 0.05
+  emitterVelocityScale: 0.5
   tangentVelocity: {x: 0, y: 0, z: 0}
   angularVelocity: 65
   rndAngularVelocity: -15
@@ -270,7 +270,7 @@ EllipsoidParticleEmitter:
   worldVelocity: {x: 0, y: 0, z: 0}
   localVelocity: {x: 0, y: 0, z: 0}
   rndVelocity: {x: 0, y: 0, z: 0}
-  emitterVelocityScale: 0.05
+  emitterVelocityScale: 0.5
   tangentVelocity: {x: 0, y: 0, z: 0}
   angularVelocity: 55
   rndAngularVelocity: -25
@@ -297,7 +297,7 @@ EllipsoidParticleEmitter:
   worldVelocity: {x: 0, y: 0, z: 0}
   localVelocity: {x: 0, y: 0, z: 0}
   rndVelocity: {x: 0, y: 0, z: 0}
-  emitterVelocityScale: 0.05
+  emitterVelocityScale: 0.5
   tangentVelocity: {x: 0, y: 0, z: 0}
   angularVelocity: 45
   rndAngularVelocity: -10
