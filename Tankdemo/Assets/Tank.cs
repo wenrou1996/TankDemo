@@ -4,6 +4,32 @@ using UnityEngine;
 
 public class Tank : MonoBehaviour {
 
+    //操控类型
+    public enum CtrlType
+    {
+        none,
+        player,
+        computer
+    }
+
+    //默认操控类型为玩家
+    public CtrlType ctrlType = CtrlType.player;
+
+    //最大生命值
+    private float maxHp = 100;
+
+    //当前生命值
+    private float hp = 100;
+
+    //炮弹预设
+    public GameObject bullet;
+
+    //上一次开炮的时间
+    public float lastShootTime = 0;
+
+    //开炮的时间间隔
+    private float shootInterval = 0.5f;
+
     //马达音源
     public AudioSource motorAudioSource;
 
@@ -47,9 +73,15 @@ public class Tank : MonoBehaviour {
     private float maxRoll = 10f;
     private float minRoll = -4f;
 
+
     //玩家控制
     public void PlayerCtrl()
     {
+        //只有当玩家操控的坦克才会生效
+        if(ctrlType != CtrlType.player)
+        {
+            return;
+        }
         //马力和转向角
         motor = maxMotorTorque * Input.GetAxis("Vertical");
         steering = maxSteeringAngle * Input.GetAxis("Horizontal");
@@ -70,6 +102,30 @@ public class Tank : MonoBehaviour {
         //炮塔炮管角度
         turretRotTarget = Camera.main.transform.eulerAngles.y;
         turretRollTarget = Camera.main.transform.eulerAngles.x;
+        //发射炮弹
+        if(Input.GetMouseButton(0))
+        {
+            Shoot();
+        }
+    }
+
+    //开炮
+    public void Shoot()
+    {
+        //发射间隔
+        if(Time.time - lastShootTime < shootInterval)
+        {
+            return;
+        }
+        //子弹
+        if(bullet == null)
+        {
+            return;
+        }
+        //发射
+        Vector3 pos = gun.position + gun.forward * 50;
+        Instantiate(bullet, pos, gun.rotation);
+        lastShootTime = Time.time;
     }
 
     //马达音效
@@ -181,7 +237,7 @@ public class Tank : MonoBehaviour {
             euler.x = minRoll;
         }
         gun.localEulerAngles = new Vector3(euler.x, localEuler.y, localEuler.z);//重新设置角度，炮管只在x轴旋转
-        System.Console.WriteLine("1111");
+        //System.Console.WriteLine("1111");
     }
 
 	// Use this for initialization

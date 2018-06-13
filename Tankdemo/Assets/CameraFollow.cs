@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
 
-	public float distance = 120;//距离
+	public float distance = 130;//距离
 
 	public float rot = 0;//横向角度
 
@@ -38,7 +38,7 @@ public class CameraFollow : MonoBehaviour {
 	//纵向旋转
 	void Roll()
 	{
-		float w = Input.GetAxis("Mouse Y") * rollSpeed * 0.5f;
+		float w = Input.GetAxis("Mouse Y") * rollSpeed*0.5f;
 		roll -= w;
 		if(roll > maxRoll)
 		{
@@ -83,7 +83,7 @@ public class CameraFollow : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		target = GameObject.Find("tank");//找到坦克
-		//setTarget(target);
+		setTarget(target);
 	}
 
 	// Update is called once per frame
