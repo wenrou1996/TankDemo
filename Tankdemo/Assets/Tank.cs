@@ -225,7 +225,7 @@ public class Tank : MonoBehaviour {
         Vector3 pos = gun.position + gun.forward * 50;
         Instantiate(bullet, pos, gun.rotation);
         lastShootTime = Time.time;
-        BeAttacked(30);
+        //BeAttacked(30);
     }
 
     //被击中
