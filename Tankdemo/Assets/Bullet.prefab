@@ -116,6 +116,8 @@ MonoBehaviour:
   explode: {fileID: 1708599685950920, guid: 7e6c4b0c67f5e40538036d194b8b3779, type: 2}
   maxLiftTime: 3
   instantiateTime: 0
+  explodeClip: {fileID: 8300000, guid: 386545c2531ef40d4890393025a1d90c, type: 3}
+  attackTank: {fileID: 0}
 --- !u!135 &135731715697308558
 SphereCollider:
   m_ObjectHideFlags: 1

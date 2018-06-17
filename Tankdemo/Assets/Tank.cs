@@ -15,6 +15,12 @@ public class Tank : MonoBehaviour {
     //默认操控类型为玩家
     public CtrlType ctrlType = CtrlType.player;
 
+    //击杀提示图标
+    public Texture2D killUI;
+
+    //击杀图标开始显示的时间
+    private float killUIStartTime = float.MinValue;
+
     //中心准心
     public Texture2D centerSight;
 
@@ -41,7 +47,13 @@ public class Tank : MonoBehaviour {
     public float lastShootTime = 0;
 
     //开炮的时间间隔
-    private float shootInterval = 0.5f;
+    private float shootInterval = 2f;
+
+    //发射炮弹音源
+    public AudioSource shootAudioSource;
+
+    //发射音效
+    public AudioClip shootClip;
 
     //马达音源
     public AudioSource motorAudioSource;
@@ -87,6 +99,9 @@ public class Tank : MonoBehaviour {
     private float minRoll = -4f;
 
 
+    //人工智能
+    private AI ai;
+
     //玩家控制
     public void PlayerCtrl()
     {
@@ -121,6 +136,57 @@ public class Tank : MonoBehaviour {
         if(Input.GetMouseButton(0))
         {
             Shoot();
+        }
+    }
+
+    //电脑控制
+    public void ComputerCtrl()
+    {
+        if(ctrlType != CtrlType.computer)
+        {
+            return;
+        }
+
+        //炮塔目标角度
+        Vector3 rot = ai.GetTurretTarget();
+        turretRotTarget = rot.y;
+        turretRollTarget = rot.x;
+        //发射炮弹
+        if(ai.IsShoot())
+        {
+            Shoot();
+        }
+        //移动
+        steering = ai.GetSteering();
+        motor = ai.GetMotor();
+        brakeTorque = ai.GetBrakeTorque();
+    }
+
+    //无人控制
+    public void NoneCtrl()
+    {
+        if(ctrlType != CtrlType.none)
+        {
+            return;
+        }
+        motor = 0;
+        steering = 0;
+        brakeTorque = maxBrakeTorque / 2;
+    }
+
+    //显示击杀图标
+    public void StartDrawKill()
+    {
+        killUIStartTime = Time.time;
+    }
+
+    //绘制击杀图标
+    private void DrawKillUI()
+    {
+        if((Time.time - killUIStartTime) < 1f)
+        {
+            Rect rect = new Rect(Screen.width / 2 - killUI.width / 2, 30, killUI.width, killUI.height);
+            GUI.DrawTexture(rect, killUI);
         }
     }
 
@@ -222,14 +288,20 @@ public class Tank : MonoBehaviour {
             return;
         }
         //发射
+        shootAudioSource.PlayOneShot(shootClip);
         Vector3 pos = gun.position + gun.forward * 50;
-        Instantiate(bullet, pos, gun.rotation);
+        GameObject bulletObj = (GameObject)Instantiate(bullet, pos, gun.rotation);
+        Bullet bulletCmp = bulletObj.GetComponent<Bullet>();
+        if(bulletCmp != null)
+        {
+            bulletCmp.attackTank = this.gameObject;
+        }
         lastShootTime = Time.time;
         //BeAttacked(30);
     }
 
     //被击中
-    public void BeAttacked(float att)
+    public void BeAttacked(float att, GameObject attackTank)
     {
         //坦克已经被摧毁
         if(hp <= 0)
@@ -240,6 +312,11 @@ public class Tank : MonoBehaviour {
         if(hp > 0)
         {
             hp -= att;
+            //AI处理
+            if(ai != null)
+            {
+                ai.OnAttecked(attackTank);
+            }
         }
         //被摧毁
         if(hp <= 0)
@@ -248,6 +325,15 @@ public class Tank : MonoBehaviour {
             destoryObj.transform.SetParent(transform, false);
             destoryObj.transform.localPosition = Vector3.zero;
             ctrlType = CtrlType.none;
+            //显示击杀提示
+            if(attackTank != null)
+            {
+                Tank tankCmp = attackTank.GetComponent<Tank>();
+                if(tankCmp != null && tankCmp.ctrlType == CtrlType.player)
+                {
+                    tankCmp.StartDrawKill();
+                }
+            }
         }
     }
 
@@ -373,15 +459,26 @@ public class Tank : MonoBehaviour {
 		wheels = transform.Find("wheels");
 		//获取履带
 		tracks = transform.Find("chain");
+        //发射音源
+        shootAudioSource = gameObject.AddComponent<AudioSource>();
+        shootAudioSource.spatialBlend = 1;
         //马达音源
         motorAudioSource = gameObject.AddComponent<AudioSource>();
         motorAudioSource.spatialBlend = 1;
+        //人工智能
+        if(ctrlType == CtrlType.computer)
+        {
+            ai = gameObject.AddComponent<AI>();
+            ai.tank = this;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        //玩家操作
+        //操作
         PlayerCtrl();
+        ComputerCtrl();
+        NoneCtrl();
         //遍历车轴
         foreach (Axlelnfo axleInfo in axlelnfos)
         {
@@ -426,5 +523,6 @@ public class Tank : MonoBehaviour {
             return;
         DrawSight();
         DrawHp();
+        DrawKillUI();
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
 
-	public float distance = 130;//距离
+	public float distance = 15;//距离
 
 	public float rot = 0;//横向角度
 
@@ -20,11 +20,11 @@ public class CameraFollow : MonoBehaviour {
 	private float rollSpeed = 0.2f;
 
 	//距离范围
-	public float maxDistance = 220f;
-	public float minDistance = 50f;
+	public float maxDistance = 22f;
+	public float minDistance = 5f;
 
 	//距离变化速度
-	public float zoomSpeed = 10f;
+	public float zoomSpeed = 0.2f;
 
 	private GameObject target;
 
