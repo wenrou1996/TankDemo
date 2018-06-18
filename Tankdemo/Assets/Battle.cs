@@ -7,8 +7,69 @@ public class Battle : MonoBehaviour {
     //单例
     public static Battle instance;
 
+    //坦克预设
+    public GameObject[] tankPrefabs;
+
     //战场中的所有坦克
     public BattleTank[] battleTanks;
+
+    //生成一辆坦克
+    public void GenerateTank(int camp, int num, Transform spCamp, int index)
+    {
+        //获取出生点和预设
+        Transform trans = spCamp.GetChild(num);
+        Vector3 pos = trans.position;
+        Quaternion rot = trans.rotation;
+        GameObject prefab = tankPrefabs[camp-1];
+        //产生坦克
+        GameObject tankObj = (GameObject)Instantiate(prefab, pos, rot);
+        //设置属性
+        Tank tankCmp = tankObj.GetComponent<Tank>();
+        tankCmp.ctrlType = Tank.CtrlType.computer;
+        //battleTanks
+        battleTanks[index] = new BattleTank();
+        battleTanks[index].tank = tankCmp;
+        battleTanks[index].camp = camp;
+    }
+
+    //开始战斗
+    public void StartTwoCampBattle(int n1, int n2)
+    {
+        //获取出生点容器
+        Transform sp = GameObject.Find("SwopPoints").transform;
+        Transform spCamp1 = sp.GetChild(0);
+        Transform spCamp2 = sp.GetChild(1);
+        //判断
+        if(spCamp1.childCount < n1 || spCamp2.childCount < n2)
+        {
+            Debug.Log("出生点数量不够");
+            return;
+        }
+        if(tankPrefabs.Length < 2)
+        {
+            Debug.Log("坦克预设数量不够");
+            return;
+        }
+        //清理场景
+        ClearBattle();
+        //产生坦克
+        battleTanks = new BattleTank[n1+n2];
+        for (int i = 0; i < n1; i++)//产生第一个阵营的坦克
+        {
+            GenerateTank(1, i, spCamp1, i);
+        }
+        for (int i = 0; i < n2; i++)
+        {
+            GenerateTank(2, i, spCamp2, n1+i);
+        }
+        //把第一辆坦克设为玩家操控
+        Tank tankCmp = battleTanks[0].tank;
+        tankCmp.ctrlType = Tank.CtrlType.player;
+        //设置相机
+        CameraFollow cf = Camera.main.gameObject.GetComponent<CameraFollow>();
+        GameObject target = tankCmp.gameObject;
+        cf.setTarget(target);
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +77,7 @@ public class Battle : MonoBehaviour {
         instance = this;
 
         //开始战斗
-        StartTwoCampBattle(2, 1);
+        StartTwoCampBattle(3, 3);
 	}
 	
 	// Update is called once per frame

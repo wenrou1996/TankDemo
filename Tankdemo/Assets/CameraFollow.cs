@@ -82,8 +82,8 @@ public class CameraFollow : MonoBehaviour {
 	}
 	// Use this for initialization
 	void Start () {
-		target = GameObject.Find("tank");//找到坦克
-		setTarget(target);
+		//target = GameObject.Find("tank");//找到坦克
+		//setTarget(target);
 	}
 
 	// Update is called once per frame

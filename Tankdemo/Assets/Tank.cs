@@ -334,6 +334,8 @@ public class Tank : MonoBehaviour {
                     tankCmp.StartDrawKill();
                 }
             }
+            //战场结算
+            Battle.instance.IsWin(attackTank);
         }
     }
 
