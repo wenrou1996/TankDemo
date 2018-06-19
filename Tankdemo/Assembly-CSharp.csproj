@@ -65,7 +65,13 @@
     <Compile Include="Assets\BattleTank.cs" />
     <Compile Include="Assets\Bullet.cs" />
     <Compile Include="Assets\CameraFollow.cs" />
+    <Compile Include="Assets\PanelCode\InfoPanel.cs" />
+    <Compile Include="Assets\PanelCode\PanelBase.cs" />
+    <Compile Include="Assets\PanelCode\PanelMgr.cs" />
+    <Compile Include="Assets\PanelCode\TitlePanel.cs" />
+    <Compile Include="Assets\PanelCode\WinPanel.cs" />
     <Compile Include="Assets\Path.cs" />
+    <Compile Include="Assets\Root.cs" />
     <Compile Include="Assets\Tank.cs" />
     <Reference Include="Assembly-UnityScript-firstpass">
       <HintPath>/Users/mac/TankDemo/Tankdemo/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>

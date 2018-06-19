@@ -77,7 +77,7 @@ public class Battle : MonoBehaviour {
         instance = this;
 
         //开始战斗
-        StartTwoCampBattle(3, 3);
+        //StartTwoCampBattle(3, 3);
 	}
 	
 	// Update is called once per frame
@@ -124,6 +124,7 @@ public class Battle : MonoBehaviour {
             }
         }
         Debug.Log("阵营" + camp + "获胜");
+        PanelMgr.instance.OpenPanel<WinPanel>("", camp);
         return true;
     }
 

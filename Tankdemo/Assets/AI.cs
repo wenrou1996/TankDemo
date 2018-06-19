@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class AI : MonoBehaviour {
 
-    //坦克预设
-    public GameObject[] tankPrefabs;
 
     //所控制的坦克
     public Tank tank;
