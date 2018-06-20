@@ -66,6 +66,7 @@
     <Compile Include="Assets\Bullet.cs" />
     <Compile Include="Assets\CameraFollow.cs" />
     <Compile Include="Assets\PanelCode\InfoPanel.cs" />
+    <Compile Include="Assets\PanelCode\OptionPanel.cs" />
     <Compile Include="Assets\PanelCode\PanelBase.cs" />
     <Compile Include="Assets\PanelCode\PanelMgr.cs" />
     <Compile Include="Assets\PanelCode\TitlePanel.cs" />

@@ -33,9 +33,7 @@ public class TitlePanel : PanelBase
     public void OnStartClick()
     {
         //开始游戏
-        Battle.instance.StartTwoCampBattle(3, 3);
-        //关闭
-        Close();
+        PanelMgr.instance.OpenPanel<OptionPanel>("");
     }
 
     public void OnInfoClick()

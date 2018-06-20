@@ -1,6 +1,6 @@
 ﻿<Properties StartupConfiguration="{32F762D1-755C-3135-F131-4E7C89F91ED5}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/PanelCode/PanelMgr.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/PanelCode/OptionPanel.cs">
     <Files>
       <File FileName="Assets/Battle.cs" Line="127" Column="55" />
       <File FileName="Assets/Root.cs" Line="13" Column="1" />
@@ -8,6 +8,7 @@
       <File FileName="Assets/PanelCode/WinPanel.cs" Line="1" Column="1" />
       <File FileName="Assets/PanelCode/InfoPanel.cs" Line="1" Column="1" />
       <File FileName="Assets/PanelCode/PanelMgr.cs" Line="58" Column="1" />
+      <File FileName="Assets/PanelCode/OptionPanel.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
